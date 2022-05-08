@@ -810,6 +810,20 @@ class DeserializerTrezarcoin(Deserializer):
         return blake2s_hash.digest()
 
 
+class DeserializerBlackcoin(Deserializer):
+    def read_tx(self):
+        version = self._read_le_int32()
+        inputs = self._read_inputs()
+        outputs = self._read_outputs()
+        locktime = self._read_le_uint32()
+        if version < 2:
+            time = self._read_le_uint32()
+        else:
+            time = 0
+
+        return TxTime(version, time, inputs, outputs, locktime)
+
+
 class DeserializerReddcoin(Deserializer):
     def read_tx(self):
         version = self._read_le_int32()
