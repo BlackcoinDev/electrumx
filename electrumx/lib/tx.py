@@ -811,17 +811,29 @@ class DeserializerTrezarcoin(Deserializer):
 
 
 class DeserializerBlackcoin(Deserializer):
-    def read_tx(self):
-        version = self._read_le_int32()
-        inputs = self._read_inputs()
-        outputs = self._read_outputs()
-        locktime = self._read_le_uint32()
-        if version < 2:
-            time = self._read_le_uint32()
-        else:
-            time = 0
+    BLACKCOIN_TX_VERSION = 1
 
-        return TxTime(version, time, inputs, outputs, locktime)
+    def _get_version(self):
+        result, = unpack_le_int32_from(self.binary, self.cursor)
+        return result
+
+    def read_tx(self):
+        version = self._get_version()
+        if version <= self.BLACKCOIN_TX_VERSION:
+            return TxTime(
+                self._read_le_int32(),   # version
+                self._read_le_uint32(),  # time
+                self._read_inputs(),     # inputs
+                self._read_outputs(),    # outputs
+                self._read_le_uint32(),  # locktime
+            )
+        else:
+            return Tx(
+                self._read_le_int32(),  # version
+                self._read_inputs(),    # inputs
+                self._read_outputs(),   # outputs
+                self._read_le_uint32()  # locktime
+            )
 
 
 class DeserializerReddcoin(Deserializer):
