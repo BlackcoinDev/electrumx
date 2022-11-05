@@ -5,8 +5,7 @@
    "version": 1,
    "time": 1652009040,
    "locktime": 0,
-   "vin":
-   [
+   "vin": [
       {
          "txid": "f0afd2133aa9af3043b6f7c0d672b7ed245c3c7fbbcb6bc5026c26b39549586e",
          "vout": 1,
